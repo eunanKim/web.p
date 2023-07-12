@@ -6,15 +6,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <style>
-    /* style.css */
-
-/* 전체 스타일 설정 */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
-
+.home-button {
+    text-align: right;
+    text-decoration: none;
+    color: lightyellow;
+  }
 /* 헤더 스타일 설정 */
 header {
   background-color: #8bc691;
@@ -54,6 +55,20 @@ section h2 {
 }
 
 /* 프로젝트 스타일 설정 */
+.project-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.project {
+  width: 300px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 .project {
   margin-bottom: 20px;
 }
@@ -71,7 +86,8 @@ footer {
 }
 #slogan {
   background-color: #588c76;
-  padding: 40px 40px;
+  padding: 80px 120px;
+  margin-top: 130px; /* 내리려는 값으로 조정 */
 }
 
 .slogan-container {
@@ -90,6 +106,43 @@ footer {
   font-size: 16px;
   margin-bottom: 0;
 }
+.project .image-container {
+  display: flex;
+  align-items: center;
+}
+
+.project .image-container img {
+  margin-right: 10px;
+}
+ /* 상단 고정 스타일 */
+ header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #8bc691;
+    padding: 10px;
+    color: #fff;
+  }
+  nav {
+    position: fixed;
+    top: 100px; /* header의 높이만큼 여백 추가 */
+    left: 0;
+    right: 0;
+    background-color: #f2f2f2;
+    padding: 10px;
+  }
+  /* 하단 고정 스타일 */
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #8bc691;
+    padding: 10px;
+    color: #e4ffee;
+    text-align: center;
+  }
 </style>
 <body>
   <header>
@@ -110,20 +163,14 @@ footer {
     </div>
   </section>  
   <section id="about">
-    <h2>소개</h2>
-    <p>김은안/17세/3D 디자이너(희망)</p>
+    <h2>Introduction</h2>
+    <p>김은안/bssm 3기/17세/3D 디자이너(희망)</p>
   </section>
+  
   <section id="projects">
-    <h2>프로젝트</h2>
-    <div class="project-container">
-      <div class="project">
-        <img src="" alt="">
-        <button id="add-project">add</button>
-        <button class="delete-project">del</button>
-      </div>
-    </div>
-    
-  </section>
+    <h2>Project/Design</h2>
+    <a href="2.html" class="button" class="home_button">프로젝트 사이트로 이동</a>
+</section>
   
   <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -146,17 +193,19 @@ footer {
       
       // 프로젝트 이미지 업로드 필드 추가
       var projectImageInput = document.createElement('input');
+      projectImageInput.id = 'image-input';
       projectImageInput.type = 'file';
       
       // 프로젝트 이미지 표시용 이미지 요소 추가
       var projectImage = document.createElement('img');
-      projectImage.src = '';
-      projectImage.alt = '';
+      projectImage.id = 'project-image';
+      projectImage.src = '#';
+      projectImage.alt = '프로젝트 이미지';
       
       // 삭제 버튼 추가
       var deleteButton = document.createElement('button');
       deleteButton.classList.add('delete-project');
-      deleteButton.textContent = 'del';
+      deleteButton.textContent = '삭제';
       
       var lineBreak = document.createElement('br');
       
@@ -184,16 +233,60 @@ footer {
       deleteButton.addEventListener('click', function() {
         projectContainer.removeChild(projectDiv);
       });
+      
+      // 이미지 업로드 필드에 변경 이벤트 리스너 추가
+projectImageInput.addEventListener('change', function(event) {
+  var file = event.target.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      
+      // 이미지 크기 조정
+      var maxImageSize = 280; // 최대 이미지 크기 (픽셀)
+      var width = img.width;
+      var height = img.height;
+      
+      // 이미지 비율 계산
+      var aspectRatio = width / height;
+      
+      // 이미지 크기 조정
+      if (width > height) {
+        if (width > maxImageSize) {
+          width = maxImageSize;
+          height = width / aspectRatio;
+        }
+      } else {
+        if (height > maxImageSize) {
+          height = maxImageSize;
+          width = height * aspectRatio;
+        }
+      }
+      
+      // 캔버스에 이미지 그리기
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // 리사이즈된 이미지 데이터를 URL로 변환하여 표시
+      projectImage.src = canvas.toDataURL('image/jpeg', 0.7); // 이미지 품질 (0.7은 70% 품질)
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
     });
   });
   </script>
   
-  
-  
   <section id="contact">
-    <h2>연락처</h2>
+    <h2>Contact</h2>
     <p>전화번호: 010-8414-1656</p>
     <p>notion: eunAn</p>
+    <p>git: eunanKim</p>
   </section>
   
   <footer>
